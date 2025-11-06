@@ -1,2 +1,2 @@
-# cource-project-MusicPlayerHeartz
-Musical player Heartz
+# cource-project-MusicPlayer
+Musical player 
