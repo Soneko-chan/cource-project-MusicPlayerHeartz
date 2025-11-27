@@ -67,7 +67,7 @@
 
 **Поля:**
 - 'ArtistId' (int,PK) - ID артиста.
-- 'Name' (string) - Имя артиста.
+- 'ArtistName' (string) - Имя артиста.
 
 
 ### Таблица 3: Albums
@@ -76,7 +76,7 @@
 **Поля:**
 - 'AlbumId' (int,PK) - ID альбома.
 - 'ArtistId' (int,FK) - ID артиста.
-- 'Name' (string) - Название альбома.
+- 'AlbumName' (string) - Название альбома.
 
 **Связи:**
 - Связь один-к-одному с таблицей Artists
@@ -87,8 +87,8 @@
 **Поля:**
 - 'PlaylistId' (int,PK) - ID плейлиста.
 - 'TrackId' (int,FK) - ID Трека.
-- 'Name' (string) - Название плейлиста.
-- 'CoverPath' (string) - Путь к изображению.
+- 'PlaylistName' (string) - Название плейлиста.
+- 'PlaylistCoverPath' (string) - Путь к изображению.
 
 **Связи:**
 - Связь один-к-одному с таблицей Tracks
@@ -110,7 +110,7 @@
 - 'PaymentId' (int,PK) - ID платежа.
 - 'UserId' (int,FK) - ID пользователя
 - 'CardNumber' (NVARCHAR(20)) - номер карты
-- 'ExpiryCardDate' (NVARCHAR(7)) - дата прекращения работы карты
+- 'ExpiryCardDate' (DateTime) - дата прекращения работы карты
 - 'CVV' (NVARCHAR(4)) - верификационный код карты
 - 'PaymentAmount' (DECIMAL(10,2)) - сумма платежа
 - 'PaymentDate' (DateTime) - Дата платежа
