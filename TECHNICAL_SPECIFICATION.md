@@ -44,79 +44,93 @@
 
 ## 3. Структура базы данных
 
-### Таблица 1: Traсks
-**Описание:** Таблица с данными о треках.Самая главная таблица,которая будет использована почти везде.
+### Таблица 1: Tracks
+**Описание:** Основная таблица с информацией о музыкальных треках.
 
 **Поля:**
-- 'TrackId' (int,PK) - ID Трека.
-- 'ArtistId' (int,FK) - ID артиста.
-- 'AlbumId' (int,FK) - ID альбома.
-- 'DataCreated' (Data) - Дата создания трека.
-- 'TrackFilePath' - Путь к треку.
-- 'Title' (string) - Название трека.
-- 'TrackDuration' (float) - Длительность трека
-- 'CoverPath' (string) - Путь к изображению для обложки
+- `TrackId` (INT, PRIMARY KEY, AUTO_INCREMENT) — уникальный идентификатор трека.
+- `ArtistId` (INT, FOREIGN KEY) — ссылка на исполнителя.
+- `AlbumId` (INT, FOREIGN KEY, NULLABLE) — ссылка на альбом.
+- `DateCreated` (DATETIME) — дата добавления трека в базу.
+- `TrackFilePath` (VARCHAR(500)) — абсолютный путь к аудиофайлу.
+- `Title` (VARCHAR(255)) — название трека.
+- `TrackDuration` (FLOAT) — длительность трека в секундах.
+- `CoverPath` (VARCHAR(500), NULLABLE) — путь к файлу обложки.
 
 **Связи:**
-- Связь один-ко-многим с таблицей Albums
-- Связь один-к-одному с таблицей Artists
-- Связь один-ко-многим с таблицей Playlists
+- Внешний ключ `ArtistId` ссылается на таблицу `Artists`.
+- Внешний ключ `AlbumId` ссылается на таблицу `Albums`.
+- Связь один-ко-многим с таблицей `PlaylistTracks` (через связующую таблицу).
 
 ### Таблица 2: Artists
-**Описание:** Таблица с данными об артистах.
+**Описание:** Таблица с информацией об исполнителях.
 
 **Поля:**
-- 'ArtistId' (int,PK) - ID артиста.
-- 'ArtistName' (string) - Имя артиста.
-
+- `ArtistId` (INT, PRIMARY KEY, AUTO_INCREMENT) — уникальный идентификатор исполнителя.
+- `ArtistName` (VARCHAR(255)) — имя исполнителя.
 
 ### Таблица 3: Albums
-**Описание:** Таблица с данными альбомов.
+**Описание:** Таблица с информацией об альбомах.
 
 **Поля:**
-- 'AlbumId' (int,PK) - ID альбома.
-- 'ArtistId' (int,FK) - ID артиста.
-- 'AlbumName' (string) - Название альбома.
+- `AlbumId` (INT, PRIMARY KEY, AUTO_INCREMENT) — уникальный идентификатор альбома.
+- `ArtistId` (INT, FOREIGN KEY) — ссылка на исполнителя.
+- `AlbumName` (VARCHAR(255)) — название альбома.
+- `ReleaseYear` (INT, NULLABLE) — год выпуска.
 
 **Связи:**
-- Связь один-к-одному с таблицей Artists
+- Внешний ключ `ArtistId` ссылается на таблицу `Artists`.
 
 ### Таблица 4: Playlists
-**Описание:** Таблица с данными плейлистов.
+**Описание:** Таблица с информацией о пользовательских плейлистах.
 
 **Поля:**
-- 'PlaylistId' (int,PK) - ID плейлиста.
-- 'TrackId' (int,FK) - ID Трека.
-- 'PlaylistName' (string) - Название плейлиста.
-- 'PlaylistCoverPath' (string) - Путь к изображению.
+- `PlaylistId` (INT, PRIMARY KEY, AUTO_INCREMENT) — уникальный идентификатор плейлиста.
+- `UserId` (INT, FOREIGN KEY) — ссылка на создателя плейлиста.
+- `PlaylistName` (VARCHAR(255)) — название плейлиста.
+- `PlaylistCoverPath` (VARCHAR(500), NULLABLE) — путь к изображению обложки плейлиста.
+- `DateCreated` (DATETIME) — дата создания.
 
 **Связи:**
-- Связь один-к-одному с таблицей Tracks
+- Внешний ключ `UserId` ссылается на таблицу `Users`.
 
-### Таблица 5: Users
-**Описание:** Таблица с данными пользователя.
-
-**Поля:**
-- 'UserId' (int,PK) - ID пользователя.
-- 'Login' (string) - Логин пользователя.
-- 'Password' (string) - Пароль пользователя.
-- 'Username' (string) - Имя пользователя.
-
-
-### Таблица 6: Payments
-**Описание:** Таблица с данными об оплате.
+### Таблица 5: PlaylistTracks (Связующая таблица)
+**Описание:** Таблица для организации связи многие-ко-многим между плейлистами и треками.
 
 **Поля:**
-- 'PaymentId' (int,PK) - ID платежа.
-- 'UserId' (int,FK) - ID пользователя
-- 'CardNumber' (NVARCHAR(20)) - номер карты
-- 'ExpiryCardDate' (DateTime) - дата прекращения работы карты
-- 'CVV' (NVARCHAR(4)) - верификационный код карты
-- 'PaymentAmount' (DECIMAL(10,2)) - сумма платежа
-- 'PaymentDate' (DateTime) - Дата платежа
+- `PlaylistId` (INT, FOREIGN KEY) — ссылка на плейлист.
+- `TrackId` (INT, FOREIGN KEY) — ссылка на трек.
+- `TrackOrder` (INT) — порядковый номер трека в плейлисте.
+- `DateAdded` (DATETIME) — дата добавления трека в плейлист.
 
-**Саязи:**
-- Связь один-к-одному с таблицей Users
+**Связи:**
+- Составной первичный ключ (`PlaylistId`, `TrackId`).
+- Внешние ключи ссылаются на таблицы `Playlists` и `Tracks`.
+
+### Таблица 6: Users
+**Описание:** Таблица с данными пользователей.
+
+**Поля:**
+- `UserId` (INT, PRIMARY KEY, AUTO_INCREMENT) — уникальный идентификатор пользователя.
+- `Login` (VARCHAR(100), UNIQUE) — логин для входа.
+- `PasswordHash` (VARCHAR(255)) — хэш пароля.
+- `Username` (VARCHAR(255)) — отображаемое имя пользователя.
+- `Email` (VARCHAR(255), NULLABLE) — электронная почта.
+- `SubscriptionExpiry` (DATETIME, NULLABLE) — дата окончания подписки.
+
+### Таблица 7: Payments
+**Описание:** Таблица с историей платежей за подписку.
+
+**Поля:**
+- `PaymentId` (INT, PRIMARY KEY, AUTO_INCREMENT) — уникальный идентификатор платежа.
+- `UserId` (INT, FOREIGN KEY) — ссылка на пользователя.
+- `CardLastFour` (CHAR(4)) — последние 4 цифры номера карты.
+- `PaymentAmount` (DECIMAL(10,2)) — сумма платежа.
+- `PaymentDate` (DATETIME) — дата и время оплаты.
+- `Status` (VARCHAR(50)) — статус платежа (Успешно/Ошибка).
+
+**Связи:**
+- Внешний ключ `UserId` ссылается на таблицу `Users`.
 
 ## 4. Основные формы приложения
 
